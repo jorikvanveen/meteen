@@ -13,12 +13,14 @@
           cargo
           rustc
           rust-analyzer
+          rustfmt
           pnpm
           nodejs
           entr
           findutils
           ripgrep
           posting
+          sea-orm-cli
         ];
       };
     }

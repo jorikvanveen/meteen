@@ -1,14 +1,37 @@
-use axum::{
-    routing::get,
-    Router,
-};
+use std::sync::Arc;
+
+use axum::{routing::{get, patch, post}, Router};
+use color_eyre::eyre::Context;
+
+mod cfg;
+mod entity;
+mod routes;
+mod utils;
+
+use entity::prelude::*;
+use sea_orm::{ActiveValue, EntityTrait};
+
+pub struct AppState {
+    pub db: sea_orm::DatabaseConnection,
+}
 
 #[tokio::main]
-async fn main() {
-    // build our application with a single route
-    let app = Router::new().route("/", get(|| async { "Hello, World!" }));
+async fn main() -> color_eyre::Result<()> {
+    color_eyre::install()?;
+    tracing_subscriber::fmt::init();
+    let config = cfg::load_config().await.wrap_err("Failed to load config")?;
+    let db = sea_orm::Database::connect(config.db_path).await.unwrap();
+
+    let state = Arc::new(AppState { db });
+
+    let app = Router::new()
+        .route("/", get(|| async { "Hello, World!" }))
+        .route("/task", post(routes::create_task))
+        .route("/task/{id}", patch(routes::patch_task))
+        .route("/task/{id}", get(routes::get_task)).with_state(state);
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
+    Ok(())
 }
