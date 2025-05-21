@@ -1,15 +1,12 @@
 use std::sync::Arc;
 
-use axum::{routing::{get, patch, post}, Router};
+use axum::{routing::{delete, get, patch, post}, Router};
 use color_eyre::eyre::Context;
 
 mod cfg;
 mod entity;
 mod routes;
 mod utils;
-
-use entity::prelude::*;
-use sea_orm::{ActiveValue, EntityTrait};
 
 pub struct AppState {
     pub db: sea_orm::DatabaseConnection,
@@ -26,6 +23,10 @@ async fn main() -> color_eyre::Result<()> {
 
     let app = Router::new()
         .route("/", get(|| async { "Hello, World!" }))
+        .route("/category", post(routes::create_category))
+        .route("/category", get(routes::list_categories))
+        .route("/category/{id}", delete(routes::delete_category))
+        .route("/category/{id}/nuke", delete(routes::nuke_category))
         .route("/task", post(routes::create_task))
         .route("/task/{id}", patch(routes::patch_task))
         .route("/task/{id}", get(routes::get_task)).with_state(state);

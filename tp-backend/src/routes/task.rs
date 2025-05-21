@@ -3,8 +3,6 @@ use std::sync::Arc;
 use axum::{
     Json,
     extract::{Path, State},
-    http::StatusCode,
-    response::IntoResponse,
 };
 use chrono::Utc;
 use sea_orm::{ActiveModelTrait, ActiveValue, EntityTrait};
@@ -12,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     AppState,
-    entity::{self, task::Entity},
+    entity::{self},
     utils::{errors::APIError, option_to_active},
 };
 
@@ -103,7 +101,6 @@ pub async fn patch_task(
             }
         };
     }
-
     update_task_field!(description);
     update_task_field!(importance);
     update_task_field!(urgency);
