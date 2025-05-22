@@ -7,11 +7,11 @@ use axum::{
 use chrono::Utc;
 use sea_orm::{ActiveModelTrait, ActiveValue, EntityTrait};
 use serde::{Deserialize, Serialize};
+use serde_with::rust::double_option;
+use ts_rs::TS;
 
 use crate::{
-    AppState,
-    entity::{self},
-    utils::{errors::APIError, option_to_active},
+    entity::{self, task}, utils::{errors::APIError, option_to_active}, AppState
 };
 
 pub async fn get_task(
@@ -26,7 +26,8 @@ pub async fn get_task(
     Ok(Json(task))
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct CreateTask {
     description: String,
     importance: Option<f32>,
@@ -72,13 +73,45 @@ pub async fn create_task(
     Ok(Json(inserted))
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct PatchTask {
+    #[ts(optional)]
     description: Option<String>,
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        with = "::serde_with::rust::double_option",
+    )]
+    #[ts(optional)]
     importance: Option<Option<f32>>,
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        with = "::serde_with::rust::double_option",
+    )]
+    #[ts(optional)]
     urgency: Option<Option<f32>>,
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        with = "::serde_with::rust::double_option",
+    )]
+    #[ts(optional)]
     due_date: Option<Option<chrono::DateTime<Utc>>>,
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        with = "::serde_with::rust::double_option",
+    )]
+    #[ts(optional)]
     do_date: Option<Option<chrono::DateTime<Utc>>>,
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        with = "::serde_with::rust::double_option",
+    )]
+    #[ts(optional)]
     category: Option<Option<i32>>,
 }
 

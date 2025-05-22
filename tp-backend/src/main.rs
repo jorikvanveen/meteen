@@ -1,7 +1,8 @@
 use std::sync::Arc;
 
-use axum::{routing::{delete, get, patch, post}, Router};
+use axum::{http::HeaderValue, routing::{delete, get, patch, post}, Router};
 use color_eyre::eyre::Context;
+use tower_http::cors::{Any, CorsLayer};
 
 mod cfg;
 mod entity;
@@ -21,6 +22,8 @@ async fn main() -> color_eyre::Result<()> {
 
     let state = Arc::new(AppState { db });
 
+    let cors_layer = CorsLayer::new().allow_origin("*".parse::<HeaderValue>().unwrap()).allow_methods(Any).allow_headers(Any);
+
     let app = Router::new()
         .route("/", get(|| async { "Hello, World!" }))
         .route("/category", post(routes::create_category))
@@ -29,7 +32,9 @@ async fn main() -> color_eyre::Result<()> {
         .route("/category/{id}/nuke", delete(routes::nuke_category))
         .route("/task", post(routes::create_task))
         .route("/task/{id}", patch(routes::patch_task))
-        .route("/task/{id}", get(routes::get_task)).with_state(state);
+        .route("/task/{id}", get(routes::get_task))
+        .with_state(state)
+        .layer(cors_layer);
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
