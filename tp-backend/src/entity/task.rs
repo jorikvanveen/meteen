@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize, ts_rs :: TS)]
 #[sea_orm(table_name = "task")]
 #[ts(export)]
+#[ts(export_to = "TaskModel.ts")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,

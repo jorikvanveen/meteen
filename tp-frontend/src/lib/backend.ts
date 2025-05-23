@@ -30,7 +30,14 @@ export default class Backend {
       console.error(await response.text()) 
       throw new Error("Failed to update task")
     }
-    
+  }
 
+  public static async listCategoryTasks(category_id: BigInt) {
+    const response = await fetch(`${BASE_URL}/category/${category_id}/tasks`);
+
+    if (!response.ok) {
+      console.error(await response.text())
+      throw new Error("Failed to list category")
+    }
   }
 }

@@ -28,6 +28,7 @@ async fn main() -> color_eyre::Result<()> {
         .route("/", get(|| async { "Hello, World!" }))
         .route("/category", post(routes::create_category))
         .route("/category", get(routes::list_categories))
+        .route("/category/{id}/tasks", get(routes::list_category_tasks))
         .route("/category/{id}", delete(routes::delete_category))
         .route("/category/{id}/nuke", delete(routes::nuke_category))
         .route("/task", post(routes::create_task))

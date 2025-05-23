@@ -12,7 +12,9 @@ export default function Home() {
     <div className="h-full flex flex-row gap-4 p-4 justify-center items-center">
       <HomeCard className="max-w-1/2 z-1 transition-all grow-1" title="Today">My epic tasks</HomeCard>
       <Button onClick={() => setOverviewExpanded(!overviewExpanded)}>{overviewExpanded ? "<" : ">"}</Button>
-      <HomeCard className={`h-full transition-all ${overviewExpanded ? "grow-1" : overviewHiddenClasses}`} title="Overview"><Overview /></HomeCard>
+      <HomeCard className={`h-full transition-all ${overviewExpanded ? "grow-1" : overviewHiddenClasses}`} title="Overview" titleRight={true}>
+        <Overview />
+      </HomeCard>
     </div>
   )
 }

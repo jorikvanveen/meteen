@@ -76,3 +76,16 @@ pub async fn list_categories(
     let categories = category::Entity::find().all(db).await?;
     Ok(Json(categories))
 }
+
+pub async fn list_category_tasks(
+    State(state): State<Arc<AppState>>,
+    Path(category_id): Path<i32>,
+) -> Result<Json<Vec<task::Model>>, APIError> {
+    let db = &state.db;
+    let all: Vec<(category::Model, Vec<task::Model>)> = category::Entity::find_by_id(category_id)
+        .find_with_related(task::Entity)
+        .all(db)
+        .await?;
+    let (_category, tasks): &(category::Model, Vec<task::Model>) = all.first().ok_or(APIError::NotFound)?;
+    Ok(Json(tasks.clone()))
+}
