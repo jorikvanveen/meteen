@@ -6,6 +6,7 @@ use axum::{
 };
 use sea_orm::{ActiveValue, prelude::*};
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 use crate::{
     AppState,
@@ -13,7 +14,8 @@ use crate::{
     utils::errors::APIError,
 };
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct CreateCategory {
     pub name: String,
 }

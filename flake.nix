@@ -25,6 +25,7 @@
           posting
           sea-orm-cli
           tailwindcss-language-server
+          bacon
         ]);
       };
     }
